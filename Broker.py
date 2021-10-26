@@ -9,6 +9,8 @@ messages = []
 DISCONNECT_MESSAGE = "DISCONNECT" 
 TERMINATE_MESSAGE = "TERMINATE" 
 ASK_REQUEST = "SEND TEMPS"
+CLIENT_MESSAGE_HEADER = "Client"
+SERVER_MESSAGE_HEADER = "Server" 
 # reserve a port on your computer in our
 # case it is 12345 but it can be anything
 PORT_CLIENTS = 12345   
@@ -24,7 +26,7 @@ print ("socket binded to %s" %(PORT_CLIENTS))
 # put the socket into listening mode
 s.listen(4)    
 print ("Server socket is listening")
-          
+           
  
 # a forever loop until we interrupt it or
 # an error occurs
@@ -38,14 +40,16 @@ while True:
   c.send('Thank you for connecting'.encode())
   print ()
   # Close the connection with the client
-  msg = c.recv(1024).decode()
+  msg = c.recv(1024).decode()   
   if msg == DISCONNECT_MESSAGE:
       c.close()
   elif msg == ASK_REQUEST:
+      pickled_SERVER_Header = pickle.dumps(SERVER_MESSAGE_HEADER)
       pickled_messages = pickle.dumps(messages)
+      pickled_messages = pickled_SERVER_Header + pickled_messages
       c.send(pickled_messages)
-  else:
-      messages.append(msg)
+  elif msg[0:6] == CLIENT_MESSAGE_HEADER:
+      messages.append(msg[6:])
       print(messages)
 
 
