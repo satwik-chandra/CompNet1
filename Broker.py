@@ -44,13 +44,14 @@ while True:
   if msg == DISCONNECT_MESSAGE:
       c.close()
   elif msg == ASK_REQUEST:
+      print("Sending info to the dashboard")
       pickled_SERVER_Header = pickle.dumps(SERVER_MESSAGE_HEADER)
       pickled_messages = pickle.dumps(messages)
       pickled_messages = pickled_SERVER_Header + pickled_messages
       c.send(pickled_messages)
   elif msg[0:6] == CLIENT_MESSAGE_HEADER:
       messages.append(msg[6:])
-      print(messages)
+      print("Message recieved from Sensor \n")
 
 
 
